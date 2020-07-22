@@ -1,0 +1,25 @@
+; 'kernel.asm' file to 'kernel.bin' using NASM
+nams - bin kernel.asm -o kernel.bin
+
+; 'bootloader.asm' file to 'bootloader.bin' using NASM
+nams - bin bootloader.asm -o bootloader.bin
+
+;make floppy file directory in linux
+cd /media
+sudo mkdir floppy
+
+; And open new terminal, and make floppy image
+sudo mkfs.msdos -C floppy.img 1440
+
+;mount in it to floppy directory
+sudo mount -o loop floppy.img /media/floppy
+
+;move boot file and kernel file into it.
+sudo dd if=./boot.bin of=/dev/loop9 
+   ; 'loop9' depend on that made floppy image disks location.
+sudo cp kernel.bin /media/floppy/
+
+;unmount floppy image
+sudo unmount /media/floppy
+sudo rm -rf /media/floppy
+
